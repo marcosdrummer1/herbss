@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        #searchInput {
+            width: 300px;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        #resultContainer {
+            max-width: 800px;
+            margin: auto;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #27ae60;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Plant Information</h1>
+    <input type="text" id="searchInput" placeholder="Type a plant name">
+    <button onclick="search()">Search</button>
+    <div id="resultContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const resultContainer = document.getElementById('resultContainer');
+            const searchButton = document.querySelector('button');
+
+            let recentSearches = [];
+
+            searchButton.addEventListener('click', function () {
+                const query = searchInput.value.toLowerCase();
+                displayPlantInfo(query);
+                saveRecentSearch(query);
+            });
+
+            function displayPlantInfo(query) {
+                resultContainer.innerHTML = '';
+
+                if (query.trim() === '') {
+                    return; // If the search input is empty, do nothing
+                }
+
+                const plantData = plantDatabase[query];
+
+                if (plantData) {
+                    const plantSection = document.createElement('div');
+                    plantSection.innerHTML = `
+                        <h2>${query.toUpperCase()}</h2>
+                        <p><strong>Origin:</strong> ${plantData.origin}</p>
+                        <p><strong>Consumption:</strong> ${plantData.consumption}</p>
+                        <p><strong>Information:</strong> ${plantData.information}</p>
+                        <p><strong>Fun Fact:</strong> ${plantData.funFact}</p>
+                    `;
+                    resultContainer.appendChild(plantSection);
+                } else {
+                    const notFoundMessage = document.createElement('p');
+                    notFoundMessage.textContent = 'Plant not found. Please enter a valid plant name.';
+                    resultContainer.appendChild(notFoundMessage);
+                }
+            }
+
+            function saveRecentSearch(query) {
+                if (query.trim() === '') {
+                    return; // If the search input is empty, do nothing
+                }
+
+                // Add the query to recent searches
+                recentSearches.push(query);
+
+                // Limit recent searches to the last 5
+                if (recentSearches.length > 5) {
+                    recentSearches.shift();
+                }
+
+                // Update the search input placeholder with recent searches
+                searchInput.placeholder = `Recent searches: ${recentSearches.join(', ')}`;
+            }
+        });
+
+        const plantDatabase = {
+            // Fill out the information for 100 plants...
+            plant1: {
+                origin: 'Tropical regions',
+                consumption: 'Edible fruit, Medicinal',
+                information: 'Bananas are a rich source of potassium and are widely consumed worldwide. They are botanically classified as berries.',
+                funFact: 'The banana plant is not a tree but a large herbaceous plant.',
+            },
+            plant2: {
+                origin: 'South America',
+                consumption: 'Edible seeds, Oil production',
+                information: 'Soybeans are a versatile legume used in various food products, including tofu and soy milk. They are also a key ingredient in the production of soybean oil.',
+                funFact: 'Soybeans belong to the pea family and are an excellent source of protein.',
+            },
+            // ... (up to plant100)
+            plant100: {
+                origin: 'Australia',
+                consumption: 'Edible fruit, Medicinal',
+                information: 'Kangaroo paw is a unique flowering plant with vibrant, tubular flowers. It is native to Australia and is popular in gardens for its distinctive appearance.',
+                funFact: 'The flowers of the kangaroo paw plant resemble a kangaroo\'s paw, hence the name.',
+            },
+        };
+    </script>
+</body>
+</html>
